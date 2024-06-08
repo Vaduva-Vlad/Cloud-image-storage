@@ -52,7 +52,9 @@ def logout():
     session.clear()
     return redirect('/')
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET','POST'])
 def upload():
     image = request.files["imagefile"]
-    print(image)
+    url="http://127.0.0.1:8081/images"
+    response=requests.post(url, files={'imagefile': image})
+    print(response.json())
