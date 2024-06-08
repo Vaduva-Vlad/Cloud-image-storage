@@ -5,16 +5,42 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Dashboard</h1>
-    <p>Salut, {{ username }}!</p>
+<h1>Dashboard</h1>
+<p>Salut, {{ username }}!</p>
 
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" multiple>
-        <button type="submit">Upload</button>
-    </form>
+<form action="/upload" id="imageUploadForm" enctype="multipart/form-data">
+    <input type="file" name="imagefile" accept="image/*" multiple>
+    <button type="submit">Upload</button>
+</form>
 
-    <form action="/logout" method="POST">
-        <button type="submit">Logout</button>
-    </form>
+<form action="/logout" method="POST">
+    <button type="submit">Logout</button>
+</form>
+
+<script>
+    const imageUploadForm = document.getElementById('imageUploadForm');
+
+    imageUploadForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Previne trimiterea formularului prin default
+
+        const formData = new FormData(imageUploadForm);
+
+        try {
+            const response = await fetch('http://localhost:5000/images', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                console.log('Imaginile au fost încărcate cu succes');
+                // Poți adăuga cod suplimentar pentru a gestiona răspunsul de succes
+            } else {
+                console.error('A apărut o eroare la încărcarea imaginilor');
+            }
+        } catch (error) {
+            console.error('Eroare la încărcarea imaginilor:', error);
+        }
+    });
+</script>
 </body>
 </html>

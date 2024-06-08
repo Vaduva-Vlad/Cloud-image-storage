@@ -51,3 +51,8 @@ def dashboard():
 def logout():
     session.clear()
     return redirect('/')
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    image = request.files["imagefile"]
+    print(image)
