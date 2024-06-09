@@ -41,3 +41,17 @@ def images():
         return "OK"
     else:
         return "No file uploaded", 400
+
+@app.route("/images/<user_id>", methods=["GET"])
+def get_images(user_id):
+    client = storage.Client()
+    bucket = client.get_bucket('bd_backup_imagini')
+    blobs = bucket.list_blobs(prefix=f'{user_id}/')
+    names=[]
+    urls=[]
+    for blob in blobs:
+        public_url=f'https://storage.googleapis.com/bd_backup_imagini/{blob.name}'
+        urls.append(public_url)
+        names.append(blob.name)
+
+    return urls
