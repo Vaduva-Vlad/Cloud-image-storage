@@ -58,11 +58,9 @@ def upload():
     image = request.files["imagefile"]
     url="http://127.0.0.1:8081/images"
     filename = image.filename
-    decoded=jwt.decode(session['token'],"cheia_secreta", algorithms=["HS256"])
-    user_id=decoded['user_id']
     files = {
-        'imagefile': (filename, image.read(), image.content_type),
-        'user_id': str(user_id)
+        'imagefile': (filename, image.read(), image.content_type)
     }
-    response = requests.post(url, files=files)
+    headers = {'Authorization': session['token']}
+    response = requests.post(url, files=files, headers=headers)
     return 'OK'

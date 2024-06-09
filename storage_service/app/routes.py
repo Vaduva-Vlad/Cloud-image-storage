@@ -26,13 +26,14 @@ init_db()
 @app.route("/images", methods=["POST"])
 def images():
     image = request.files.get('imagefile')
-    user_id = request.form.get('user_id')
+    token = request.headers.get('Authorization')
+    decoded = jwt.decode(token, "cheia_secreta", algorithms=["HS256"])
+    user_id = decoded['user_id']
     print(user_id)
     image.save("img.png")
     image.seek(0)
     if image:
         filename = image.filename
-        print(image.user_id)
         client = storage.Client()
         bucket = client.get_bucket('bd_backup_imagini')
         blob = bucket.blob(f'{user_id}/{filename}')
