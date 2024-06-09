@@ -1,3 +1,4 @@
+import jwt
 from flask import render_template, request, redirect, session
 import requests
 from app import app
@@ -56,5 +57,12 @@ def logout():
 def upload():
     image = request.files["imagefile"]
     url="http://127.0.0.1:8081/images"
-    response=requests.post(url, files={'imagefile': image})
-    print(response.json())
+    filename = image.filename
+    decoded=jwt.decode(session['token'],"cheia_secreta", algorithms=["HS256"])
+    user_id=decoded['user_id']
+    files = {
+        'imagefile': (filename, image.read(), image.content_type),
+        'user_id': str(user_id)
+    }
+    response = requests.post(url, files=files)
+    return 'OK'
