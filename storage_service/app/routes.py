@@ -53,5 +53,5 @@ def get_images(user_id):
         public_url=f'https://storage.googleapis.com/bd_backup_imagini/{blob.name}'
         urls.append(public_url)
         names.append(blob.name)
-
+    print(urls)
     return urls

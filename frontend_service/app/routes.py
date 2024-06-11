@@ -38,6 +38,8 @@ def login():
             return redirect('/dashboard')
     return render_template('login.html')
 
+
+# old - backup
 @app.route('/dashboard')
 def dashboard():
     token = session.get('token')
@@ -47,6 +49,28 @@ def dashboard():
         if response.status_code == 200:
             return render_template('dashboard.html', username=response.json()['username'])
     return redirect('/login')
+
+
+# @app.route('/dashboard') # ruta actualizata pt grid image render/red
+# def dashboard():
+#     token = session.get('token')
+#     if token:
+#         headers = {'Authorization': token}
+#         response = requests.get(f'{AUTH_SERVICE_URL}/protected', headers=headers)
+#         if response.status_code == 200:
+#             username = response.json()['username']
+#             decoded = jwt.decode(token, "cheia_secreta", algorithms=["HS256"])
+#             user_id = decoded['user_id']
+#             print(user_id)
+#
+#             # Faceți o cerere către serviciul de stocare pentru a obține lista de URL-uri
+#             storage_service_url = 'http://127.0.0.1:8081'  # Înlocuiți cu URL-ul corect al serviciului de stocare
+#             image_urls = requests.get(f'{storage_service_url}/images/{user_id}').json()
+#
+#             return render_template('dashboard.html', username=username, image_urls=image_urls)
+#     return redirect('/login')
+
+
 
 @app.route('/logout', methods=['POST'])
 def logout():

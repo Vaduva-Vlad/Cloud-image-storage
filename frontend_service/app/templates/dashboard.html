@@ -40,6 +40,14 @@
         .logout-button {
             margin-top: 20px;
         }
+
+        .image-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-gap: 20px;
+        justify-items: center;
+        }
+
     </style>
 </head>
 
@@ -55,6 +63,13 @@
             <input type="file" name="imagefile">
             <button type="submit">Upload</button>
         </form>
+
+        <div class="image-gallery">
+            {% for url in image_urls %}
+            <img src="{{ url }}" alt="User Image">
+            {% endfor %}
+        </div>
+
         <form action="/logout" method="POST" class="logout-button">
             <button type="submit" style="display: block; width: 100%;">Logout</button>
         </form>
