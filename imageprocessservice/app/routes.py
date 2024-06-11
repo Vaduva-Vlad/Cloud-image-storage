@@ -20,7 +20,7 @@ def process():
     filter=data['filter']
 
     client = storage.Client()
-    bucket = client.get_bucket('bd_backup_imagini')
+    bucket = client.get_bucket('bd_imagini')
     blob = bucket.blob(f'{user_id}/{filename}')
     contents=blob.download_as_bytes()
     image = Image.open(io.BytesIO(contents))

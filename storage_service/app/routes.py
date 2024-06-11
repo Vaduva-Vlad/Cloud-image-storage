@@ -35,7 +35,7 @@ def images():
     if image:
         filename = image.filename
         client = storage.Client()
-        bucket = client.get_bucket('bd_backup_imagini')
+        bucket = client.get_bucket('bd_imagini')
         blob = bucket.blob(f'{user_id}/{filename}')
         blob.upload_from_file(image, content_type=image.content_type)
         return "OK"
@@ -45,12 +45,12 @@ def images():
 @app.route("/images/<user_id>", methods=["GET"])
 def get_images(user_id):
     client = storage.Client()
-    bucket = client.get_bucket('bd_backup_imagini')
+    bucket = client.get_bucket('bd_imagini')
     blobs = bucket.list_blobs(prefix=f'{user_id}/')
     names=[]
     urls=[]
     for blob in blobs:
-        public_url=f'https://storage.googleapis.com/bd_backup_imagini/{blob.name}'
+        public_url=f'https://storage.googleapis.com/bd_imagini/{blob.name}'
         urls.append(public_url)
         names.append(blob.name)
     print(urls)

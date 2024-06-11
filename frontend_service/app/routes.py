@@ -40,35 +40,34 @@ def login():
 
 
 # old - backup
-@app.route('/dashboard')
-def dashboard():
-    token = session.get('token')
-    if token:
-        headers = {'Authorization': token}
-        response = requests.get(f'{AUTH_SERVICE_URL}/protected', headers=headers)
-        if response.status_code == 200:
-            return render_template('dashboard.html', username=response.json()['username'])
-    return redirect('/login')
-
-
-# @app.route('/dashboard') # ruta actualizata pt grid image render/red
+# @app.route('/dashboard')
 # def dashboard():
 #     token = session.get('token')
 #     if token:
 #         headers = {'Authorization': token}
 #         response = requests.get(f'{AUTH_SERVICE_URL}/protected', headers=headers)
 #         if response.status_code == 200:
-#             username = response.json()['username']
-#             decoded = jwt.decode(token, "cheia_secreta", algorithms=["HS256"])
-#             user_id = decoded['user_id']
-#             print(user_id)
-#
-#             # Faceți o cerere către serviciul de stocare pentru a obține lista de URL-uri
-#             storage_service_url = 'http://127.0.0.1:8081'  # Înlocuiți cu URL-ul corect al serviciului de stocare
-#             image_urls = requests.get(f'{storage_service_url}/images/{user_id}').json()
-#
-#             return render_template('dashboard.html', username=username, image_urls=image_urls)
+#             return render_template('dashboard.html', username=response.json()['username'])
 #     return redirect('/login')
+
+
+@app.route('/dashboard') # ruta actualizata pt grid image render/red
+def dashboard():
+    token = session.get('token')
+    if token:
+        headers = {'Authorization': token}
+        response = requests.get(f'{AUTH_SERVICE_URL}/protected', headers=headers)
+        if response.status_code == 200:
+            username = response.json()['username']
+            decoded = jwt.decode(token, "cheia_secreta", algorithms=["HS256"])
+            user_id = decoded['user_id']
+
+            storage_service_url = 'http://127.0.0.1:8020'
+            image_urls = requests.get(f'{storage_service_url}/images/{user_id}').json()
+            print(image_urls)
+
+            return render_template('dashboard.html', username=username, image_urls=image_urls)
+    return redirect('/login')
 
 
 
@@ -80,7 +79,7 @@ def logout():
 @app.route('/upload', methods=['GET','POST'])
 def upload():
     image = request.files["imagefile"]
-    url="http://127.0.0.1:8081/images"
+    url="http://127.0.0.1:8020/images"
     filename = image.filename
     files = {
         'imagefile': (filename, image.read(), image.content_type)
