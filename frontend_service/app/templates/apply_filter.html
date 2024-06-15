@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply Filter</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .image-container div {
+            margin: 0 20px; /* Add horizontal margin */
+            margin-top: 50px;
+        }
+
+        .image-container img {
+            max-width: 500px;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Apply Filter</h2>
+    <form action="/apply_filter" method="POST">
+        <input type="hidden" name="image_url" value="{{ image_url }}">
+        <label for="filter">Select Filter:</label>
+        <select name="filter" id="filter">
+            <option value="greyscale">Greyscale</option>
+            <option value="sharpen">Sharpen</option>
+            <option value="blur">Blur</option>
+            <option value="smooth">Smooth</option>
+        </select>
+        <button type="button" id="apply-filter-btn">Apply Filter</button>
+        <button type="submit">Send</button>
+    </form>
+    <div class="image-container">
+        <div>
+            <p>Original Image</p>
+            <img id="original-image" alt="Original Image">
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const originalImage = document.getElementById('original-image');
+    const previewImage = document.getElementById('preview-image');
+    const filterSelect = document.getElementById('filter');
+    const applyFilterBtn = document.getElementById('apply-filter-btn');
+
+    // Extract image URL from the URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const imageUrl = urlParams.get('image_url');
+
+    // Set the image URLs for the img elements
+    originalImage.src = imageUrl;
+    const splitUrl = imageUrl.split('/')
+    const user_id = splitUrl[4]
+    const filename = splitUrl[5]
+
+    applyFilterBtn.addEventListener('click', () => {
+        const selectedFilter = filterSelect.value;
+
+        // Send request to image processing service to apply the filter
+        fetch('http://127.0.0.1:8081/process', {  // Ensure this matches the Flask app URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id:user_id,
+                filename: filename,
+                filter: selectedFilter
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const previewUrl = URL.createObjectURL(blob);
+            previewImage.src = previewUrl; // Update previewImage src with processed image
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+
+</body>
+</html>
