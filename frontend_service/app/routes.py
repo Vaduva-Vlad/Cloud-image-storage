@@ -63,7 +63,11 @@ def dashboard():
             user_id = decoded['user_id']
 
             storage_service_url = 'http://127.0.0.1:8020'
-            image_urls = requests.get(f'{storage_service_url}/images/{user_id}').json()
+            #image_urls = requests.get(f'{storage_service_url}/images/{user_id}').json()
+            try:
+                image_urls = requests.get(f'{storage_service_url}/images/{user_id}').json()
+            except requests.exceptions.JSONDecodeError:
+                image_urls = []
             print(image_urls)
 
             return render_template('dashboard.html', username=username, image_urls=image_urls)
@@ -87,3 +91,28 @@ def upload():
     headers = {'Authorization': session['token']}
     response = requests.post(url, files=files, headers=headers)
     return 'OK'
+
+
+@app.route('/apply_filter', methods=['GET', 'POST'])
+def apply_filter():
+    if request.method == 'POST':
+        image_url = request.form['image_url']
+        filter_name = request.form['filter']
+        response = requests.post(f'http://127.0.0.1:8021/process', json={
+            'filename': image_url.split('/')[-1],
+            'filter': filter_name
+        })
+
+        if response.status_code == 200:
+            storage_url = 'http://127.0.0.1:8020/images'
+            token = session['token']
+            headers = {'Authorization': token}
+            image_data = response.content
+            files = {'imagefile': (image_url.split('/')[-1], image_data, 'image/png')}
+            requests.post(storage_url, headers=headers, files=files)
+
+            return redirect('/dashboard')
+        else:
+            return 'Eroare la aplicarea filtrului', 500
+
+    return render_template('apply_filter.html')

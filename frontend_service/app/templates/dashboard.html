@@ -72,9 +72,17 @@
             <button type="submit">Upload</button>
         </form>
 
+<!--        <div class="image-gallery">-->
+<!--            {% for url in image_urls %}-->
+<!--            <img src="{{ url }}" alt="User Image">-->
+<!--            {% endfor %}-->
+<!--        </div>-->
         <div class="image-gallery">
             {% for url in image_urls %}
-            <img src="{{ url }}" alt="User Image">
+            <div>
+                <img src="{{ url }}" alt="User Image">
+                <a href="{{ url_for('apply_filter') }}?image_url={{ url }}">Apply Filter</a>
+            </div>
             {% endfor %}
         </div>
 
