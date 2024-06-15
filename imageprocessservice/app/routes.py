@@ -25,6 +25,7 @@ def process():
     client = storage.Client()
     bucket = client.get_bucket('bd_imagini')
     blob = bucket.blob(f'{user_id}/{filename}')
+    blob.cache_control = 'no-cache'
     contents = blob.download_as_bytes()
     image = Image.open(io.BytesIO(contents))
 

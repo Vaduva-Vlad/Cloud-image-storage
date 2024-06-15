@@ -96,10 +96,10 @@
             }
             return response.blob();
         })
-        .then(blob => {
-            const previewUrl = URL.createObjectURL(blob);
-            previewImage.src = previewUrl; // Update previewImage src with processed image
-        })
+        // .then(blob => {
+        //     const previewUrl = URL.createObjectURL(blob);
+        //     previewImage.src = previewUrl; // Update previewImage src with processed image
+        // })
         .catch(error => console.error('Error:', error));
     });
 </script>

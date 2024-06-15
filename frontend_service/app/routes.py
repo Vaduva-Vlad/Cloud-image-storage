@@ -87,3 +87,34 @@ def upload():
     headers = {'Authorization': session['token']}
     response = requests.post(url, files=files, headers=headers)
     return 'OK'
+
+@app.route('/apply_filter', methods=['GET', 'POST'])
+def apply_filter():
+    if request.method == 'POST':
+        image_url = request.form['image_url']
+        selected_filter = request.form['filter']
+
+        # Extrage user_id și filename din image_url
+        url_parts = image_url.split('/')
+        user_id = url_parts[-2]
+        filename = url_parts[-1]
+
+        # Trimite cererea POST la /process
+        process_url = 'http://127.0.0.1:8081/process'
+        data = {
+            'user_id': user_id,
+            'filename': filename,
+            'filter': selected_filter
+        }
+        response = requests.post(process_url, json=data)
+
+        if response.status_code == 200:
+            # Procesarea a avut succes
+            return redirect('/dashboard')
+        else:
+            # Gestionează eroarea
+            return "Eroare la aplicarea filtrului", 500
+
+    # Afișează formularul pentru aplicarea filtrului
+    image_url = request.args.get('image_url')
+    return render_template('apply_filter.html', image_url=image_url)

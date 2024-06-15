@@ -37,6 +37,7 @@ def images():
         client = storage.Client()
         bucket = client.get_bucket('bd_imagini')
         blob = bucket.blob(f'{user_id}/{filename}')
+        blob.cache_control = 'no-cache'
         blob.upload_from_file(image, content_type=image.content_type)
         return "OK"
     else:
