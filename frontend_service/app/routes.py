@@ -79,13 +79,15 @@ def logout():
 @app.route('/upload', methods=['GET','POST'])
 def upload():
     image = request.files["imagefile"]
-    url="http://127.0.0.1:8020/images"
+    url_images="http://127.0.0.1:8020/images"
+    url_backup="http://127.0.0.1:8090/backup"
     filename = image.filename
     files = {
         'imagefile': (filename, image.read(), image.content_type)
     }
     headers = {'Authorization': session['token']}
-    response = requests.post(url, files=files, headers=headers)
+    requests.post(url_images, files=files, headers=headers)
+    requests.post(url_backup, files=files, headers=headers)
     return 'OK'
 
 @app.route('/apply_filter', methods=['GET', 'POST'])

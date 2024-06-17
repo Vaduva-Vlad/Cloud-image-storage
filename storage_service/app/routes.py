@@ -4,9 +4,7 @@ import jwt
 from google.cloud import storage
 from flask import request, session
 from app import app
-from app.models import get_db, init_db
 
-init_db()
 
 # @app.route("/images", methods=["POST"])
 # def images():
@@ -30,8 +28,6 @@ def images():
     decoded = jwt.decode(token, "cheia_secreta", algorithms=["HS256"])
     user_id = decoded['user_id']
     print(user_id)
-    image.save("img.png")
-    image.seek(0)
     if image:
         filename = image.filename
         client = storage.Client()
