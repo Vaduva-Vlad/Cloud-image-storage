@@ -39,18 +39,6 @@ def login():
     return render_template('login.html')
 
 
-# old - backup
-# @app.route('/dashboard')
-# def dashboard():
-#     token = session.get('token')
-#     if token:
-#         headers = {'Authorization': token}
-#         response = requests.get(f'{AUTH_SERVICE_URL}/protected', headers=headers)
-#         if response.status_code == 200:
-#             return render_template('dashboard.html', username=response.json()['username'])
-#     return redirect('/login')
-
-
 @app.route('/dashboard') # ruta actualizata pt grid image render/red
 def dashboard():
     token = session.get('token')
@@ -96,12 +84,10 @@ def apply_filter():
         image_url = request.form['image_url']
         selected_filter = request.form['filter']
 
-        # Extrage user_id și filename din image_url
         url_parts = image_url.split('/')
         user_id = url_parts[-2]
         filename = url_parts[-1]
 
-        # Trimite cererea POST la /process
         process_url = 'http://127.0.0.1:8081/process'
         data = {
             'user_id': user_id,
@@ -111,12 +97,20 @@ def apply_filter():
         response = requests.post(process_url, json=data)
 
         if response.status_code == 200:
-            # Procesarea a avut succes
             return redirect('/dashboard')
         else:
-            # Gestionează eroarea
             return "Eroare la aplicarea filtrului", 500
 
-    # Afișează formularul pentru aplicarea filtrului
     image_url = request.args.get('image_url')
     return render_template('apply_filter.html', image_url=image_url)
+
+@app.route('/delete_image', methods=['POST'])
+def delete_image():
+    decoded = jwt.decode(session['token'], "cheia_secreta", algorithms=["HS256"])
+    user_id=decoded['user_id']
+    filename = request.form['filename']
+
+    print(user_id)
+    storage_service_url="http://127.0.0.1:8020"
+    response=requests.delete(f"{storage_service_url}/delete_image/{user_id}/{filename}")
+    return "OK"
