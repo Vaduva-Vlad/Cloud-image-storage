@@ -31,10 +31,8 @@ def process():
 
     if filter == 'greyscale':
         image = image.convert("L")
-        image.show()
     else:
         image = image.filter(FILTERS[filter])
-        image.show()
     image_bytes = io.BytesIO()
     image.save(image_bytes, format='PNG')
     blob.upload_from_string(image_bytes.getvalue(), content_type="image/png")

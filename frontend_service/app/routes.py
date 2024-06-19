@@ -76,7 +76,7 @@ def upload():
     headers = {'Authorization': session['token']}
     requests.post(url_images, files=files, headers=headers)
     requests.post(url_backup, files=files, headers=headers)
-    return 'OK'
+    return redirect('/dashboard')
 
 @app.route('/apply_filter', methods=['GET', 'POST'])
 def apply_filter():
@@ -96,7 +96,7 @@ def apply_filter():
         }
         response = requests.post(process_url, json=data)
 
-        if response.status_code == 200:
+        if response == "OK":
             return redirect('/dashboard')
         else:
             return "Eroare la aplicarea filtrului", 500
@@ -113,4 +113,4 @@ def delete_image():
     print(user_id)
     storage_service_url="http://127.0.0.1:8020"
     response=requests.delete(f"{storage_service_url}/delete_image/{user_id}/{filename}")
-    return "OK"
+    return redirect('/dashboard')

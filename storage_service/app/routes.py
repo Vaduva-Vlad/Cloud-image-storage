@@ -47,6 +47,7 @@ def get_images(user_id):
     names=[]
     urls=[]
     for blob in blobs:
+        blob.cache_control = 'no-cache'
         public_url=f'https://storage.googleapis.com/bd_imagini/{blob.name}'
         urls.append(public_url)
         names.append(blob.name)
@@ -58,7 +59,7 @@ def delete_image(user_id,filename):
     client = storage.Client()
     bucket = client.get_bucket('bd_imagini')
     blob = bucket.blob(f'{user_id}/{filename}')
-
+    blob.cache_control = 'no-cache'
     try:
         blob.delete()
         return 'Image deleted successfully'
