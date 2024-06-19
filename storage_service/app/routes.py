@@ -52,3 +52,15 @@ def get_images(user_id):
         names.append(blob.name)
     print(urls)
     return urls
+
+@app.route('/delete_image/<user_id>/<filename>', methods=['DELETE'])
+def delete_image(user_id,filename):
+    client = storage.Client()
+    bucket = client.get_bucket('bd_imagini')
+    blob = bucket.blob(f'{user_id}/{filename}')
+
+    try:
+        blob.delete()
+        return 'Image deleted successfully'
+    except Exception as e:
+        return f'Error deleting image: {str(e)}', 500

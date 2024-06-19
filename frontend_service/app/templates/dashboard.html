@@ -76,8 +76,15 @@
             {% for url in image_urls %}
             <div>
                 <img src="{{ url }}" alt="User Image">
-                <a href="{{ url_for('apply_filter') }}?image_url={{ url }}">Apply Filter</a>
-                <button type="submit">Delete image</button>
+                <div class="image-controls">
+                    <a href="{{ url_for('apply_filter') }}?image_url={{ url }}">Apply Filter</a>
+                    <form action="/delete_image" method="POST"
+                          onsubmit="return confirm('Are you sure you want to delete this image?');">
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <input type="hidden" name="filename" value="{{ url.split('/')[-1] }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
             </div>
             {% endfor %}
         </div>
