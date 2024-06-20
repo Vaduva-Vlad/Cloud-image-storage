@@ -35,7 +35,7 @@ def login():
     cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cursor.fetchone()
     if user and check_password_hash(user[3], password):
-        token = jwt.encode({'user_id': user[0], 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+        token = jwt.encode({'user_id': user[0], 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)}, app.config['SECRET_KEY'])
         return jsonify({"token": token}), 200
     return jsonify({"message": "Invalid credentials"}), 401
 

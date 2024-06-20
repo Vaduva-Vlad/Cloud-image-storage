@@ -78,7 +78,7 @@
         const selectedFilter = filterSelect.value;
 
         // Send request to image processing service to apply the filter
-        fetch('http://127.0.0.1:8081/process', {  // Ensure this matches the Flask app URL
+        fetch('https://imageprocessservice-4kaobzwtvq-lm.a.run.app/process', {  // Ensure this matches the Flask app URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -93,7 +93,8 @@
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.blob();
+            //return response.blob();
+            location.reload()
         })
         // .then(blob => {
         //     const previewUrl = URL.createObjectURL(blob);
@@ -101,6 +102,7 @@
         // })
         .catch(error => console.error('Error:', error));
     });
+
 </script>
 
 

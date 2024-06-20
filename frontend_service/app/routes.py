@@ -3,7 +3,11 @@ from flask import render_template, request, redirect, session
 import requests
 from app import app
 
-AUTH_SERVICE_URL = 'http://localhost:5000'  # URL of the auth service
+AUTH_SERVICE_URL = 'https://authservice-4kaobzwtvq-lm.a.run.app'
+STORAGE_SERVICE_URL = 'https://storageservice-4kaobzwtvq-lm.a.run.app'
+IMAGE_PROCESS_URL = 'https://imageprocessservice-4kaobzwtvq-lm.a.run.app'
+BACKUP_SERVICE_URL = 'https://backupservice-4kaobzwtvq-lm.a.run.app'
+#IMAGE_PROCESS_URL = 'http://127.0.0.1:8081'
 
 @app.route('/')
 def index():
@@ -50,8 +54,8 @@ def dashboard():
             decoded = jwt.decode(token, "cheia_secreta", algorithms=["HS256"])
             user_id = decoded['user_id']
 
-            storage_service_url = 'http://127.0.0.1:8020'
-            image_urls = requests.get(f'{storage_service_url}/images/{user_id}').json()
+
+            image_urls = requests.get(f'{STORAGE_SERVICE_URL}/images/{user_id}').json()
             print(image_urls)
 
             return render_template('dashboard.html', username=username, image_urls=image_urls)
@@ -67,8 +71,8 @@ def logout():
 @app.route('/upload', methods=['GET','POST'])
 def upload():
     image = request.files["imagefile"]
-    url_images="http://127.0.0.1:8020/images"
-    url_backup="http://127.0.0.1:8090/backup"
+    url_images=f"{STORAGE_SERVICE_URL}/images"
+    url_backup=f"{BACKUP_SERVICE_URL}/backup"
     filename = image.filename
     files = {
         'imagefile': (filename, image.read(), image.content_type)
@@ -88,7 +92,7 @@ def apply_filter():
         user_id = url_parts[-2]
         filename = url_parts[-1]
 
-        process_url = 'http://127.0.0.1:8081/process'
+        process_url = f'{IMAGE_PROCESS_URL}/process'
         data = {
             'user_id': user_id,
             'filename': filename,
@@ -111,6 +115,5 @@ def delete_image():
     filename = request.form['filename']
 
     print(user_id)
-    storage_service_url="http://127.0.0.1:8020"
-    response=requests.delete(f"{storage_service_url}/delete_image/{user_id}/{filename}")
+    response=requests.delete(f"{STORAGE_SERVICE_URL}/delete_image/{user_id}/{filename}")
     return redirect('/dashboard')
